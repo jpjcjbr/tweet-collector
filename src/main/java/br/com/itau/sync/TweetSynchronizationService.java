@@ -22,7 +22,7 @@ public class TweetSynchronizationService {
 	private TweetService tweetService;
 	
 	public void synchronize() {
-		LOGGER.debug("Clearing tweets");
+		LOGGER.info("Clearing tweets table");
 		
 		Long startTime = System.currentTimeMillis();
 		
