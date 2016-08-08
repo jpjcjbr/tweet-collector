@@ -15,6 +15,9 @@ public class CreateSchema {
 
 	@Value("${spring.data.cassandra.keyspace-name}")
 	private String keyspace;
+	
+	@Value("${spring.data.cassandra.contact-points}")
+	private String contactPoints;
 
 	private static String CREATE_KEYSPACE = "create keyspace if not exists %keyspace% "
 			+ "WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };";
@@ -33,11 +36,11 @@ public class CreateSchema {
 			+ "tweet_count_by_hashtag_and_language (hashtag text, language text, count int, PRIMARY KEY (hashtag, language));";
 	
 	private String CREATE_TABLE_TWEET_COUNT_BY_HOUR = "create table IF NOT EXISTS "
-			+ "tweet_count_by_hour_and_day (hour text, date timestamp, count int, PRIMARY KEY ((hour, date)));";
+			+ "tweet_count_by_hour_and_day (hour int, date timestamp, count int, PRIMARY KEY ((hour, date)));";
 	
 	@PostConstruct
 	public void create() {
-		Cluster cluster = Cluster.builder().addContactPoints("192.168.99.100").withPort(9042).build();
+		Cluster cluster = Cluster.builder().addContactPoints(contactPoints).withPort(9042).build();
 
 		Session session = cluster.connect();
 		

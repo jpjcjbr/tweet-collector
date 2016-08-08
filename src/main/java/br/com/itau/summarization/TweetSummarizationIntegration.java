@@ -24,9 +24,9 @@ public class TweetSummarizationIntegration {
 		LOGGER.info("Calling summarization module");
 		
 		Set<String> urls = Sets.newHashSet(
-				baseUrl + "/top-users", 
-				baseUrl + "/tweet-count-by-hashtag-and-language", 
-				baseUrl + "/tweet-count-by-hour"
+				baseUrl + "/summarizarion/top-users", 
+				baseUrl + "/summarizarion/tweet-count-by-hashtag-and-language", 
+				baseUrl + "/summarizarion/tweet-count-by-hour"
 		);
 		
 		urls.parallelStream().forEach(url -> restTemplate.getForObject(url, Void.class));
