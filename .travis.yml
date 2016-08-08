@@ -1,3 +1,17 @@
 language: java
 jdk:
   - oraclejdk8
+env:
+  global:
+    - secure: "efkBsu8nEDy5q9zEls+9GrDP59LkUkJmXlszJkG/nGeEvdmbkL94geczfIZzKbWUz6Hc/Mwmu4yg62O2E4xH0q9mLKzfvqGbHHgsiSYsoKWntG8YUQ5R2JrUI/qgd8AW7bR+EQWz7gr80Sw7krfWlJPaPnHnr5uHqOljzbB9yVoYzH6XH56Izl4jlPlmaNwhWFWUEbwxAx1C+enJy6IC4aic8hmDtPMuLhCd+1zj7Bptge0WxP5WbSuYkUqRKnFVteOM4uYdbJ5bQPZ8gjtJf6d6HMG5WYs8hBd1STFPAuT7jgw4thiA8BPaPu3bDl3Btsk75Xr5GNbc+Bhj1WQ/aTXaxsDxmtOUkHfrW1kEvazmWBTJ7xsA4w26X1iEAE58qdjNKQyhLcsyWCl10unVE1Ftnx8u0rPr4eKmGXAMBTOXOyd8oNadWSkYVUmy42G2jVTheWXEF6kb67ZoedPs2aN4gCGwtNMrtjZZEXqGU/0Jwp/HDxEoPLXY8xXn/M6AG0QMPkAuuu4HwM68N32gy0tGvFZW/OkA2mWx8bJpooqbXZ3H8tTexhyy3qbbm+yL47v2aMVsWVZsKdfU72fCwahNkODBl6HeN8IjD6Bt+kcveDRb7csM8hu0gOP8pii698pSpuwsFfSg/Ia1jHxSmzR4+bP4WV5si1Z8C/t/LzM=" # DOCKER_EMAIL
+    - secure: "FZ66ZRsMCi8zoeqx44iyly5UZ1kx7x00rtS0oSSZ0pZxhBcjbD39kZYUc9c8PVa/4ugrqH8zz12ddYT2dV4JK/Rt5cTP4p3lUrwZJljfbW6S21gkZUHP6ArEoXbMtXaKNGewWjBgoXqJgVUcKK0TMdOm1tizxf2ZpmJJK87Wj8UGZ47ShtsZyX+n3W6ZEAo6OCCWkrSZJzM+eQssGB+Zye30lRW7jaFBqUkvJ2OqAPvKmdjh/hFOEE1MwqRs+7NeGbE5stQ9sgSIaQ/rLRWUjwI4SkyW6aJ8SOfUVdpUVbdeJwbcg4OPd0RIDwsFXJErVk7p63bbemCHNa6O2A3sZ1vNtMT98DfSQI3JivqcVHMDUhKji4yKSC2MLnM+3GYFsWCusqD7fv+RrqGKPSI8yrR/G+RRsaJAmD0cUfp/srCArLTwtVTpd4XuFdcGrFvSKNMBcMcLlg5lPzVRptWrI68mAN1dyuZaZKijkThFl/XI42LAkieU9g8H/xXzlqni7XbuqyGwttHpLzc9IRp49yjcicgj7Wd3uFpDEwPUfYKxJlajkbVbduolzIcEHMh5kTw/BGKHDRybeWFuHS/LPnKWEMXWsnFMJ6ARllksGfLzBJMHKIxtTWkVLyAU4VBXd8BtkIn8YHIbcpm1UHOQvtlXDWAQcfCloRo35vs5rVQ=" # DOCKER_USER
+    - secure: "neogbDBMCt/6/2Ye1xMKXbEhFiSIkAkAhtjfP+tedS+5czKj4Yh8ZC30lhU/6VLfzq++68k819O/Zh848/TiYLD/wVPloeODpBSpT42PggzDsHehcqrIfpF05M9j2yEx33hMCo5sHSbUVgqjH+wXVLM+MU4+DV7GxYvTAj+Z/pSK7XXgDBV1lSAmvkHRq7LtnYcAgMIiG9pItbX0ilU/qcb19HFLve3fch+/5EiJzP1uv8t4/oO5tAoLOUnrrQg35bZjUamYpxerAZZSY4jIrV/n+bBp0UlMLaAPoOVhuqFGeQrT30LwYIpakcTQqjG2IMC/yK+nzej/ir2PmaKLnmLErmsjy1zODw+VyKu1Uuex/b0PEEva2CPEyiofg2rlM9bUdZgqy3OHZf93Yd/3bnCB5j0ObeWvlaPrlweTV0amxoeQ2bs4HYswBkxbA3oB79zv8ipbZ9FY6ljxExaW37STNGxtmS+yIm47YJbFK3FJF2OnsYmzdzpO49PD3CBtlWY7Jcj2itBlXLYmhPEOIex+eBz0oNxH37o4RZlX62vKC75mUUO4PoE4DpaMb3ZkTuV+7jR4KAtSIIo+qbdp7ZJViDWf9NuMet5G0lkyG38JfM99N5dpZdDB8gXYikD+ZC7MPT0oea129pWPoGmQRtE/aq8obb8Ti7Wq1CaBYDg=" # DOCKER_PASS
+    - COMMIT=${TRAVIS_COMMIT::8}
+after_success:
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - export REPO=jpjcjbr/tweet-collector
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker build -f Dockerfile -t $REPO:$COMMIT .
+  - docker tag $REPO:$COMMIT $REPO:$TAG
+  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+  - docker push $REPO
