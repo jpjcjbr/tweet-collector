@@ -1,6 +1,5 @@
 # Módulo Tweet-collector
-Módulo utilizado para coletar dados da api do twitter
-Baseado em java, springboot e cassandra
+Módulo utilizado para coletar dados da api do twitter, baseado em java, springboot e cassandra
 
 # Build java
 mvn clean install
